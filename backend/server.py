@@ -244,6 +244,7 @@ async def list_specialties():
 
 @api.get("/practitioners/{pid}", response_model=PractitionerPublic)
 async def get_practitioner(pid: str):
+    doc = None
     try:
         doc = await db.practitioners.find_one({"_id": ObjectId(pid)})
     except Exception:
@@ -254,6 +255,7 @@ async def get_practitioner(pid: str):
 
 @api.get("/practitioners/{pid}/availabilities")
 async def get_availabilities(pid: str, days: int = 7):
+    doc = None
     try:
         doc = await db.practitioners.find_one({"_id": ObjectId(pid)})
     except Exception:
@@ -338,6 +340,7 @@ def appt_to_public(doc: dict) -> dict:
 async def book_appointment(body: AppointmentCreate, current=Depends(get_current_user)):
     if current["role"] != "patient":
         raise HTTPException(status_code=403, detail="Seuls les patients peuvent réserver")
+    pract = None
     try:
         pract = await db.practitioners.find_one({"_id": ObjectId(body.practitioner_id)})
     except Exception:
@@ -383,6 +386,7 @@ async def my_appointments(current=Depends(get_current_user)):
 
 @api.delete("/appointments/{aid}")
 async def cancel_appointment(aid: str, current=Depends(get_current_user)):
+    doc = None
     try:
         doc = await db.appointments.find_one({"_id": ObjectId(aid)})
     except Exception:

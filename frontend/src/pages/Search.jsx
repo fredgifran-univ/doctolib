@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ export default function Search() {
     api.get("/practitioners/specialties").then((r) => setSpecialties(r.data)).catch(() => {});
   }, []);
 
-  const fetchResults = async (params) => {
+  const fetchResults = useCallback(async (params) => {
     setLoading(true);
     try {
       const { data } = await api.get("/practitioners", { params });
@@ -28,7 +28,7 @@ export default function Search() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchResults({
@@ -36,7 +36,7 @@ export default function Search() {
       city: sp.get("city") || undefined,
       specialty: sp.get("specialty") || undefined,
     });
-  }, [sp]);
+  }, [sp, fetchResults]);
 
   const submit = (e) => {
     e.preventDefault();

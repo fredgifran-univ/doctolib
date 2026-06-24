@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ export default function PractitionerDashboard() {
     weekly_schedule: {},
   });
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const [p, a] = await Promise.all([
@@ -63,9 +63,9 @@ export default function PractitionerDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const toggleSlot = (day, time) => {
     const current = form.weekly_schedule?.[day] || [];

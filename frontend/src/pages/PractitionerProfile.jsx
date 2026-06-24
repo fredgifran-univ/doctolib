@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -30,7 +30,7 @@ export default function PractitionerProfile() {
   const [reason, setReason] = useState("");
   const [booking, setBooking] = useState(false);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const [p, a] = await Promise.all([
@@ -42,9 +42,9 @@ export default function PractitionerProfile() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  useEffect(() => { load(); }, [id]);
+  useEffect(() => { load(); }, [load]);
 
   const handleSlotPick = (slot) => {
     if (!user || user === false) {

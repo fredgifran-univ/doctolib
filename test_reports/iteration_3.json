@@ -1,0 +1,40 @@
+{
+  "summary": "Regression run after code-review fixes. All 11 backend pytest cases pass. Both HIGH-priority frontend bugs from iteration_2 are FIXED: (1) hero-search-specialty Input now propagates ?specialty=Dentiste to /recherche and filters results to 1 dentist; (2) header-logout-btn now calls POST /api/auth/logout (200), clears auth cookies (verified 0 auth cookies remain), and a subsequent visit to /dashboard correctly redirects to /connexion. End-to-end booking + cancel flow confirmed working with 'Annulé' badge and 'Rendez-vous annulé' toast.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Search results card", "issues": ["Clicking the practitioner card body itself (the wrapper with data-testid=practitioner-card-{id}) does not navigate to the profile page; only the inner 'Voir disponibilités' link is clickable. Most users will expect the whole card to be clickable. Minor UX inconsistency — not blocking."]}
+    ]
+  },
+  "passed_flows": [
+    "Backend: GET /api/practitioners returns 8 entries",
+    "Backend: GET /api/practitioners/{invalid-id} -> 404 and .../availabilities -> 404",
+    "Backend: GET /api/practitioners/{id}/availabilities?days=7 returns 7 days",
+    "Backend: auth register/login/me/logout cycle, /me returns 401 after logout",
+    "Backend: booking create, double-book 409, cancel flips to 'cancelled', practitioner role gets 403",
+    "Backend: GET/PUT /api/me/practitioner persists bio",
+    "Frontend: hero-search-specialty='Dentiste' -> /recherche?specialty=Dentiste with 1 filtered result + Leaflet map",
+    "Frontend: practitioner profile slot click as anonymous -> /connexion, then login returns to profile",
+    "Frontend: booking-dialog confirm -> /dashboard with new appt + 'Rendez-vous' toast",
+    "Frontend: cancel-{id} moves appt to Historique with 'ANNULÉ' badge",
+    "Frontend (CRITICAL FIX VERIFIED): header-logout-btn -> /api/auth/logout 200 -> cookies cleared -> /dashboard redirects to /connexion"
+  ],
+  "test_report_links": ["/app/backend/tests/test_medibook_api.py", "/app/test_reports/pytest/iter3_results.xml"],
+  "action_items": [
+    "Optional UX polish: make the whole [data-testid=practitioner-card-*] wrapper clickable (Link) instead of only the inner 'Voir disponibilités' anchor."
+  ],
+  "critical_code_review_comments": [
+    "Logout flow now correctly invokes backend, sets Set-Cookie with max_age=0 samesite=none secure=true; verified via Playwright that browser context cookies are empty post-logout.",
+    "Hero search is an Input (not Radix Select) — confirmed; previous iteration_2 finding was a misidentification by tester, no code fix was required for that piece."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (11/11)", "frontend": "100% on critical flows"},
+  "test_credentials": "patient@demo.fr/Patient123!, praticien@demo.fr/Praticien123! both valid",
+  "seed_data_creation": "Created/cancelled a Dr. Antoine Moreau appointment for Marie Démo as part of E2E (now in Historique as ANNULÉ).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All previously reported HIGH bugs resolved. Only minor UX nit remaining: card body not clickable on search results. No further regression needed unless new features added.",
+  "rca of the issue": "Iteration_2 logout failure root cause: backend /api/auth/logout was deleting the cookie without explicit samesite/secure attributes matching the original Set-Cookie, so the browser kept the cookie. Fix in server.py now writes an expiring cookie with samesite=none; secure=true; max_age=0, matching the login cookie attributes. Verified: 200 response + empty browser cookie jar + /me returns 401 + PrivateRoute redirects /dashboard -> /connexion."
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,7 @@ export default function PatientDashboard() {
   const [appts, setAppts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.get("/appointments/mine");
@@ -29,9 +29,9 @@ export default function PatientDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const cancel = async (id) => {
     try {
@@ -99,7 +99,7 @@ export default function PatientDashboard() {
           <section className="mt-12">
             <h2 className="font-heading text-xl font-semibold mb-4">Historique <span className="text-muted-foreground font-normal text-sm">({past.length})</span></h2>
             {past.length === 0 ? (
-              <div className="text-sm text-muted-foreground">Pas encore d'historique.</div>
+              <div className="text-sm text-muted-foreground">Pas encore d&apos;historique.</div>
             ) : (
               <div className="bg-card border border-border rounded-2xl divide-y divide-border" data-testid="history-list">
                 {past.map((a) => {

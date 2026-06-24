@@ -115,8 +115,8 @@ export default function Landing() {
             { icon: Search, title: "Recherche intelligente", text: "Trouvez par nom, spécialité, ville. Filtres précis et carte interactive en temps réel." },
             { icon: CalendarCheck, title: "Agenda en direct", text: "Visualisez les créneaux disponibles et réservez en un clic depuis l'agenda du praticien." },
             { icon: ShieldCheck, title: "Données protégées", text: "Vos informations restent confidentielles. Suivez votre historique de rendez-vous dans votre espace." },
-          ].map((f, i) => (
-            <div key={i} className="bg-card border border-border rounded-2xl p-7 hover-lift" data-testid={`feature-${i}`}>
+          ].map((f) => (
+            <div key={f.title} className="bg-card border border-border rounded-2xl p-7 hover-lift" data-testid={`feature-${f.title}`}>
               <div className="w-12 h-12 rounded-2xl bg-secondary text-secondary-foreground flex items-center justify-center mb-5">
                 <f.icon className="w-5 h-5" />
               </div>
