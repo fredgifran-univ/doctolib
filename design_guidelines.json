@@ -1,0 +1,89 @@
+{
+  "theme": "Light",
+  "archetype": "1 (Organic & Earthy)",
+  "language": "French",
+  "colors": {
+    "background": "#FCFCFA",
+    "foreground": "#1C2B28",
+    "primary": "#184B3D",
+    "primary_foreground": "#FFFFFF",
+    "secondary": "#E8EFEA",
+    "secondary_foreground": "#184B3D",
+    "accent": "#CE715A",
+    "accent_foreground": "#FFFFFF",
+    "muted": "#F3F4F1",
+    "muted_foreground": "#61726B",
+    "border": "#E1E5E2",
+    "card": "#FFFFFF",
+    "card_foreground": "#1C2B28"
+  },
+  "typography": {
+    "headings": "Outfit",
+    "body": "Plus Jakarta Sans",
+    "strategy": "Soft Utility (Dashboard / Apps) - Friendly rounded sans for headings, clean geometric for body.",
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight text-[#1C2B28] font-bold",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight text-[#1C2B28] font-semibold",
+      "h3": "text-xl sm:text-2xl font-medium text-[#184B3D]",
+      "body": "text-base leading-relaxed text-[#61726B]",
+      "labels": "text-xs tracking-[0.2em] uppercase font-bold text-[#61726B]"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing, Mobile-first, The 'Bento' Grid Protocol (Mode B for Dashboard)",
+    "container_padding": "p-6 md:p-8 lg:p-12",
+    "border_radius": "rounded-2xl",
+    "card_style": "Flat Solid surfaces (NO glassmorphism for medical to prevent clinical coldness), subtle borders border-[#E1E5E2], no harsh shadows."
+  },
+  "components": {
+    "buttons": "rounded-full px-8 py-3 font-semibold transition-all duration-200 hover:-translate-y-0.5",
+    "inputs": "Shadcn input customized with rounded-xl border-[#E1E5E2] bg-[#F3F4F1]/30 focus:ring-2 focus:ring-[#184B3D]/20",
+    "map": "Interactive map layout taking 40-50% width on desktop. Custom markers using primary color (#184B3D)",
+    "calendar_timetable": "Horizontal scroll for dates, vertical list for timeslots. Available slots: bg-[#E8EFEA] text-[#184B3D] hover:bg-[#184B3D] hover:text-white. Unavailable: muted.",
+    "cards": "Subtle borders, white background, generous padding (p-6)"
+  },
+  "icons_and_assets": {
+    "library": "lucide-react",
+    "style": "Clean, minimal, 1.5px stroke weight"
+  },
+  "motion_and_interactions": {
+    "hover_states": "Soft transform translate-y-[-2px] and shadow-sm for interactive cards (practitioner profiles).",
+    "page_transitions": "Subtle fade-in for page changes."
+  },
+  "media_urls": [
+    {
+      "category": "hero_background",
+      "url": "https://images.unsplash.com/photo-1762625570087-6d98fca29531?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwY2xpbmljJTIwaW50ZXJpb3IlMjBjbGVhbiUyMG1vZGVybnxlbnwwfHx8fDE3ODIyODg3MjF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Modern waiting room with chairs and inspirational sign."
+    },
+    {
+      "category": "practitioner_avatar_1",
+      "url": "https://images.unsplash.com/photo-1612349316228-5942a9b489c2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHw0fHxkb2N0b3IlMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbCUyMGhvc3BpdGFsfGVufDB8fHx8MTc4MjI4ODcyMXww&ixlib=rb-4.1.0&q=85",
+      "description": "man in white dress shirt wearing black framed eyeglasses"
+    },
+    {
+      "category": "practitioner_avatar_2",
+      "url": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwyfHxkb2N0b3IlMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbCUyMGhvc3BpdGFsfGVufDB8fHx8MTc4MjI4ODcyMXww&ixlib=rb-4.1.0&q=85",
+      "description": "man in white scrub suit wearing green mask"
+    },
+    {
+      "category": "practitioner_avatar_3",
+      "url": "https://images.pexels.com/photos/8460094/pexels-photo-8460094.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Senior doctor with arms crossed, wearing white coat and stethoscope, standing outside."
+    }
+  ],
+  "accessibility_and_testing": {
+    "data_testid": "MANDATORY. All interactive and key informational elements MUST include a data-testid attribute.",
+    "contrast": "Ensure text contrast meets APCA guidelines, especially for secondary text over muted backgrounds."
+  },
+  "specific_instructions_to_main_agent": [
+    "The application interface language MUST be entirely in French.",
+    "Install and configure 'Outfit' and 'Plus Jakarta Sans' fonts via Google Fonts and Tailwind config.",
+    "For the Landing Page Hero: Use the 'hero_background' image with a heavy, warm overlay (e.g., bg-[#FCFCFA]/90 or a gradient) to ensure the search bar and text are perfectly readable. The search bar is the main CTA.",
+    "The Search Interface should feature fields for Speciality, Name, and Location. It must be highly visible.",
+    "Search Results Page: Implement a split-screen layout on desktop. Left side: List of practitioners (cards with avatar, name, specialty, next available slot). Right side: Interactive Map.",
+    "Interactive Timetable: Needs to be a prominent feature on the practitioner profile page. It should show 5-7 days horizontally, with vertical timeslots. Use the defined secondary color for available slots.",
+    "Dashboards (Patient & Practitioner): Use 'The Control Room' grid pattern. Dense, organized, relying on subtle borders (#E1E5E2) instead of cards with heavy drop shadows.",
+    "DO NOT use glassmorphism. It feels too clinical and cold for a modern organic health app. Stick to solid white or off-white surfaces."
+  ]
+}
