@@ -190,8 +190,9 @@ async def login(body: LoginBody, response: Response):
 
 @api.post("/auth/logout")
 async def logout(response: Response):
-    response.delete_cookie("access_token", path="/")
-    response.delete_cookie("refresh_token", path="/")
+    # Must match flags used when setting (samesite=none; secure=True) to actually clear in browser.
+    response.set_cookie("access_token", "", max_age=0, expires=0, httponly=True, secure=True, samesite="none", path="/")
+    response.set_cookie("refresh_token", "", max_age=0, expires=0, httponly=True, secure=True, samesite="none", path="/")
     return {"ok": True}
 
 @api.get("/auth/me", response_model=UserPublic)
