@@ -1,0 +1,44 @@
+{
+  "summary": "Frontend E2E testing of MediBook in French. 8 of 10 critical flows pass. Two issues found: (1) hero search specialty Select dropdown options not selectable -> URL submitted without specialty param; (2) header-logout-btn click does NOT clear session - /dashboard still shows logged-in patient after logout.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Landing hero-search-specialty Select", "issue": "Clicking hero-search-specialty opens trigger but Radix SelectContent options are not reachable / not selected by Playwright (get_by_role('option') count=0). Submit then fires without specialty param, URL becomes /recherche instead of /recherche?specialty=Dentiste. Likely the Select is uncontrolled and value not bound to form state, OR options are filtered/hidden until typed. Repro: open /, click [data-testid=hero-search-specialty], try select 'Dentiste', click submit -> URL has no specialty.", "selector": "[data-testid=hero-search-specialty]", "priority": "HIGH"},
+      {"component": "Header logout", "issue": "Clicking [data-testid=header-logout-btn] does NOT actually log the user out. After click and navigation to /dashboard, the user remains logged in (header still shows 'Marie Démo', dashboard still renders with prior appointments). Likely the logout handler is not calling /api/auth/logout, or cookie is not being cleared (samesite=none/secure cookie may need explicit Set-Cookie expire from backend), or auth context state is not reset. Repro: login as patient@demo.fr, click header-logout-btn, then visit /dashboard -> user still authenticated.", "selector": "[data-testid=header-logout-btn]", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Hero search -> Search page", "issue": "Specialty filter from landing hero not propagated to URL query params; search results show all 8 practitioners instead of dentists only.", "affected_selectors": ["[data-testid=hero-search-specialty]", "[data-testid=hero-search-submit]"]},
+      {"flow": "Logout -> session clear", "issue": "Auth cookie / context not cleared on logout click. Protected routes still accessible after clicking logout.", "affected_selectors": ["[data-testid=header-logout-btn]"]}
+    ],
+    "design_issues": []
+  },
+  "passed_flows": [
+    "Landing page loads with hero-search-form and quick-spec buttons",
+    "Search page renders 8 practitioner cards + Leaflet map with markers",
+    "Practitioner card click navigates to /praticien/:id",
+    "Practitioner profile shows photo, name, bio, slots (Timetable)",
+    "Anonymous slot click redirects to /connexion (state.from preserved)",
+    "Patient login (patient@demo.fr/Patient123!) successful, returns to practitioner page",
+    "Slot click opens booking-dialog, fill reason, booking-confirm -> redirect /dashboard with new appt in upcoming-list",
+    "cancel-{id} button removes appt from upcoming and adds to Historique with 'Annulé' badge",
+    "Practitioner login + dashboard: profile-form, weekly-schedule (slot-monday-09:00 toggle), profile-save shows 'Profil enregistré' toast",
+    "Registration (/inscription) - role tabs work, creates account, redirects to /dashboard"
+  ],
+  "test_report_links": ["/app/test_reports/pytest/medibook_results.xml"],
+  "action_items": [
+    "Fix Landing hero-search Select: ensure Dentiste selection from [data-testid=hero-search-specialty] is captured and appended to URL query string. Verify Select onValueChange handler updates form state and that handleSubmit pushes ?specialty=...",
+    "Fix logout flow in Header.jsx / AuthContext: ensure logout button calls POST /api/auth/logout with withCredentials=true, awaits response, then sets user=false and navigates. Verify backend Set-Cookie clears the JWT cookie with samesite=none; secure=true; max-age=0."
+  ],
+  "critical_code_review_comments": [
+    "Logout must await backend /api/auth/logout call before resetting client state to ensure cookie is cleared server-side.",
+    "Hero-search Select likely missing controlled value/onValueChange binding to form state."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not retested)", "frontend": "80%"},
+  "test_credentials": "patient@demo.fr/Patient123!, praticien@demo.fr/Praticien123! both valid",
+  "seed_data_creation": "Created one test patient registration test_pat_{ts}@example.com / TestPass123! (transient)",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Re-test (1) Landing hero specialty filter -> /recherche?specialty=Dentiste, (2) Logout actually clears cookie+context so /dashboard redirects to /connexion. All other booking/cancel/practitioner/registration flows already verified working end-to-end against preview URL.",
+  "rca of the issue": "Specialty filter: Radix Select component options not selected by test - likely the Select is missing controlled binding OR uses a different rendering (possibly Command/Combobox) causing the selected value to not be included on form submit. Logout: /api/auth/logout endpoint likely not invoked or backend not returning Set-Cookie that expires the httpOnly cookie; alternatively AuthContext state not being reset to false after the call so PrivateRoute redirect doesn't fire."
+}
